@@ -1,6 +1,14 @@
+
 #include <stdio.h>
 # include <conio.h>
 #include <windows.h>
+
+const int a= 17;
+const int b = 17;
+char board[a][b] ;
+int checkBoard[a][b] = {0};
+int p;
+
 
 //functions
 
@@ -26,11 +34,84 @@ void BeepError(){
 
 
 
+int sugestion_move(sartX,startY,endX,endY){
+    if (startX<=endX && startY <= endY ){
+            if (downMove())
+            else if (rightMove())
+            else if (upMove())
+            else if (leftMove())
+    }
+    else if (startX<=endX && startY >= endY ){
+            if (downMove())
+            else (leftMove())
+            else if (rightMove())
+            else if (upMove())
+    }
+    else if (startX >= endX && startY <= endY ){
+            if (rightMove())
+            else if (upMove())
+            else if (downMove())
+            else if (leftMove())
+    }
+    else if (startX >= endX && startY >= endY ){
+            if (upMove())
+            else if (leftMove())
+            else if (rightMove())
+            else if (downMove())
+
+    }
+}
+int upMove( char board[][b], char checkBoard[][b],int &currentMoveX,int &currentMoveY){
+    p = board[currentMoveX-1][currentMoveY];
+    if (p != 'X' && p != 'C' && checkBoard[currentMoveX-1][currentMoveY] == 0){
+            checkBoard[currentMoveX-1][currentMoveY] = 1;
+            currentMoveX --;
+            retuen 1;
+    }
+    return 0;
+}
+
+
+int downMove( char board[][b], char checkBoard[][b],int &currentMoveX,int &currentMoveY){
+    p = board[currentMoveX+1][currentMoveY];
+    if (p != 'X' && p != 'C' && checkBoard[currentMoveX+1][currentMoveY] == 0){
+            checkBoard[currentMoveX+1][currentMoveY] = 1;
+            currentMoveX ++;
+            retuen 1;
+    }
+    return 0;
+}
+
+int rightMove( char board[][b], char checkBoard[][b],int &currentMoveX,int &currentMoveY){
+    p = board[currentMoveX][currentMoveY+1];
+    if (p != 'X' && p != 'C' && checkBoard[currentMoveX][currentMoveY+1] == 0){
+            checkBoard[currentMoveX][currentMoveY+1] = 1;
+            currentMoveY ++;
+            retuen 1;
+    }
+    return 0;
+}
+
+int leftMove( char board[][b], char checkBoard[][b],int &currentMoveX,int &currentMoveY){
+    p = board[currentMoveX][currentMoveY+1];
+    if (p != 'X' && p != 'C' && checkBoard[currentMoveX][currentMoveY-1] == 0){
+            checkBoard[currentMoveX][currentMoveY-1] = 1;
+            currentMoveY--;
+            retuen 1;
+    }
+    return 0;
+}
+
+
+
+
+
 int main() {
-    const int a= 17;
-    const int b = 17;
-    char board[a][b] ;
+
     int row, column;
+    int startX, endX;
+    int startY, endY;
+
 
     int i,j;
 
@@ -42,6 +123,7 @@ int main() {
     int gold_product;
     int food_product;
     int village_info[288][4];
+    int blocked_info[288][2]
 
 
     printf("welcome to our game.\n");
@@ -54,19 +136,14 @@ int main() {
     }
 
 
-
-    printf("Please enter number of centers:\n");
-    scanf("%d",&number_center);
-    for(i=0;i<number_center;i++){
-        printf("Please type coordinates of center%d:\n",i+1);
-        scanf("%d%d",&x,&y);
-        if(x > row || y > column){
-            BeepError();
-            i--;
-            continue;
-        }
-        board[x-1][y-1]='C';
+    printf("Please type coordinates of center%d:\n",i+1);
+    scanf("%d%d",&endx,&endy);
+    if(x > row || y > column){
+        BeepError();
+        i--;
+        continue;
     }
+    board[x-1][y-1]='C';
 
 
     printf("Please enter number of villages:\n");
@@ -106,6 +183,28 @@ int main() {
 
 
 
+
+
+for (i=0;i<number_village;i++){
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
     for (i = 0 ;i<row;i++){
         for (int j =0; j<column;j++){
 
@@ -136,7 +235,7 @@ int main() {
     }
 
 
-
+*/
 
     return 0;
 }
