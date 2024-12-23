@@ -1,0 +1,151 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 17
+
+// Directions for moving up, down, left, right
+int dx[] = {0, 0, -1, 1};
+int dy[] = {1, -1, 0, 0};
+
+char board[MAX][MAX];
+int visited[MAX][MAX];
+int row, column;
+
+
+
+
+int generate_number(){
+    const double probs[9] = {0.65,0.25,0.05,0.05,0,0,0,0,0};
+    double cdf[9];
+    cdf[0] = probs[0];
+
+    for(int i = 1; i < 9; ++i){
+        cdf[i] = cdf[i-1] + probs[i];
+    }
+    double rand_val = (double)rand() / RAND_MAX;
+    for (int i = 0; i<9;++i){
+        if (rand_val<cdf[i]){
+            return i+1;
+
+        }
+    }
+        return -1;
+}
+
+
+
+// Function to check if a cell is valid to visit
+int is_valid(int x, int y) {
+    return (x >= 0 && x < row && y >= 0 && y < column && board[x][y] != 'X' && visited[x][y] == 0);
+}
+
+// BFS function to find the shortest path
+int bfs(int start_x, int start_y, int target_x, int target_y) {
+    int queue[MAX * MAX][2];
+    int front = 0, rear = 0;
+    int distance[MAX][MAX] = {0};
+
+    // Enqueue the starting point
+    queue[rear][0] = start_x;
+    queue[rear][1] = start_y;
+    rear++;
+    visited[start_x][start_y] = 1;
+    distance[start_x][start_y] = 0;
+
+    // Perform BFS
+    while (front < rear) {
+        int current_x = queue[front][0];
+        int current_y = queue[front][1];
+        front++;
+
+        // If we reached the village
+        if (current_x == target_x && current_y == target_y) {
+            return distance[current_x][current_y];
+        }
+
+        // Explore all four directions
+        for (int i = 0; i < 4; i++) {
+            int new_x = current_x + dx[i];
+            int new_y = current_y + dy[i];
+
+            if (is_valid(new_x, new_y)) {
+                queue[rear][0] = new_x;
+                queue[rear][1] = new_y;
+                rear++;
+                visited[new_x][new_y] = 1;
+                distance[new_x][new_y] = distance[current_x][current_y] + 1;
+            }
+        }
+    }
+
+    // If no path is found
+    return -1;
+}
+
+// Function to print the board
+void print_board() {
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < column; j++) {
+            printf("%c ", board[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    srand(time(NULL));
+    int start_x, start_y, target_x, target_y;
+    int number_block;
+    int x, y;
+
+    printf("Enter number of rows and columns: ");
+    scanf("%d %d", &row, &column);
+
+
+    // Initialize the board and visited array
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < column; j++) {
+                char b[2];
+                itoa(generate_number(),b,10);
+                board[i][j] = b[0];  // Empty cell
+                visited[i][j] = 0;  // Not visited yet
+        }
+    }
+
+    printf("Enter coordinates of the city (row column): ");
+    scanf("%d %d", &x, &y);
+    start_x = x - 1;
+    start_y = y - 1;
+    board[start_x][start_y] = 'C';
+
+    printf("Enter coordinates of the village (row column): ");
+    scanf("%d %d", &x, &y);
+    target_x = x - 1;
+    target_y = y - 1;
+    board[target_x][target_y] = 'V';
+
+    printf("Enter number of blocked cells: ");
+    scanf("%d", &number_block);
+
+    for (int i = 0; i < number_block; i++) {
+        printf("Enter coordinates of blocked cell %d (row column): ", i + 1);
+        scanf("%d %d", &x, &y);
+        board[x - 1][y - 1] = 'X';
+    }
+
+    // Print the board
+    printf("\nGame Board:\n");
+    print_board();
+
+    // Find the shortest path using BFS
+    int path_length = bfs(start_x, start_y, target_x, target_y);
+
+    // Output the result
+    if (path_length != -1) {
+        printf("Shortest path length from city to village: %d\n", path_length);
+    } else {
+        printf("No path exists from city to village.\n");
+    }
+
+    return 0;
+}
